@@ -18,6 +18,7 @@ class MenuDrop extends React.Component {
   button = undefined;
 
   handleClick = (event) => {
+    console.log("[INFO] MenuDrop Current Event Target: ", event.currentTarget);
     this.setState({ open: true, anchorEl: event.currentTarget });
   };
 
@@ -51,7 +52,7 @@ class MenuDrop extends React.Component {
           {options.map(option => (
             <div id="wrappingLink" key={option.text}>
               <a
-                href={option.url}
+                href={option.href}
                 onClick={this.handleClose}
                 target={option.target}
                 rel={option.rel}
