@@ -1,3 +1,4 @@
+// Windows only for CRLF (linebreak-style)
 module.exports = {
   parser: 'babel-eslint',
   extends: 'airbnb',
@@ -8,6 +9,7 @@ module.exports = {
   plugins: ['react', 'jsx-a11y', 'import'],
   rules: {
     'max-len': ['error', 100],
+    'linebreak-style': 0,  
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
     'prefer-destructuring': [
       'error',

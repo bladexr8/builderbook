@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "dev": "next",
-    "lint": "eslint components pages lib server"
+    "lint": "eslint components pages lib server",
+    "dev-express": "nodemon server/app.js --watch server --exec babel-node --presets=@babel/preset-env"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-beta.51",
@@ -26,6 +27,8 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "eslint": "^5.0.1",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.13.0",

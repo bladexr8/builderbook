@@ -1,34 +1,35 @@
-import dotenv from 'dotenv';
+// Create and start an Express Server
+// integrated with Next
 
 import express from 'express';
 import next from 'next';
-
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 import session from 'express-session';
 import mongoSessionStore from 'connect-mongo';
+import User from './models/User';
 
-// import User from './models/User';
-import auth from './google';
-
+// load env variables from .env file
 dotenv.config();
 
-const dev = process.env.NODE_ENV !== 'production';
+const port = process.env.PORT || 8000;
 const MONGO_URL = process.env.MONGO_URL_TEST;
+
+// console.log('[INFO] Mongo Url = ', MONGO_URL); // eslint-disable-line no-console
 
 mongoose.connect(MONGO_URL);
 
-const port = process.env.PORT || 8000;
 const ROOT_URL = process.env.ROOT_URL || `http://localhost:${port}`;
 
+const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-// Nextjs's server prepared
 app.prepare().then(() => {
   const server = express();
 
-  // confuring MongoDB session store
+  // set up Mongo DB Sessions
   const MongoStore = mongoSessionStore(session);
 
   const sess = {
@@ -36,7 +37,7 @@ app.prepare().then(() => {
     secret: 'HD2w.)q*VqRT4/#NK2M/,E^B)}FED5fWU!dKe[wk',
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
-      ttl: 14 * 24 * 60 * 60, // save session 14 days
+      ttl: 14 * 24 * 60 * 60,   // save session 14 days
     }),
     resave: false,
     saveUninitialized: false,
@@ -48,23 +49,20 @@ app.prepare().then(() => {
 
   server.use(session(sess));
 
-  // Add Support for Google Authentication (using Passport)
-  auth({ server, ROOT_URL });
+  // map Express Route to Next Route
+  // render pages/index.js on server
+  // and send to client
+  server.get('/', async (req, res) => {
+    req.session.foo = 'bar';
+    // const user = { email: 'team@builderbook.org' };
+    const user = await User.findOne({ slug: 'team-builder-book' });
+    app.render(req, res, '/', { user });
+  });
 
-  // this is testing code, remove later
-  /*server.get('/', async (req, res) => {
-    User.findOne({ slug: 'team-builder-book' }).then(user => {
-      req.user = user;
-      app.render(req, res, '/');
-    })
-  });*/
-
-  // any routes not declared before here will be managed by Next
   server.get('*', (req, res) => handle(req, res));
 
-  // starting express server
   server.listen(port, (err) => {
     if (err) throw err;
-    console.log(`> Ready on ${ROOT_URL}`); // eslint-disable-line no-console
+    console.log(`[INFO] Ready on port ${ROOT_URL}...`); // eslint-disable-line no-console
   });
 });
