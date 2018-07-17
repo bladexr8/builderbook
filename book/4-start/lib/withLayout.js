@@ -7,6 +7,7 @@ import NProgress from 'nprogress';
 
 import getContext from '../lib/context';
 import Header from '../components/Header';
+import Notifier from '../components/Notifier';
 
 Router.onRouteChangeStart = () => NProgress.start();
 Router.onRouteChangeComplete = () => NProgress.done();
@@ -36,6 +37,7 @@ function withLayout(BaseComponent) {
           <div>
             <Header {...this.props} />
             <BaseComponent {...this.props} />
+            <Notifier />
           </div>
         </MuiThemeProvider>
       );

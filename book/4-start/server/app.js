@@ -5,6 +5,7 @@ import next from 'next';
 import mongoose from 'mongoose';
 
 import auth from './google';
+import logger from './logs';
 
 require('dotenv').config();
 
@@ -47,6 +48,6 @@ app.prepare().then(() => {
   // starting express server
   server.listen(port, (err) => {
     if (err) throw err;
-    console.log(`> Ready on ${ROOT_URL}`); // eslint-disable-line no-console
+    logger.info(`> Ready on ${ROOT_URL}`);
   });
 });

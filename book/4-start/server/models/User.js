@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import _ from 'lodash';
 
 import generateSlug from '../utils/slugify';
+import sendEmail from '../aws';
+import getEmailTemplate from './EmailTemplate';
+import logger from '../logs';
 
 const { Schema } = mongoose;
 
@@ -90,6 +93,21 @@ class UserClass {
       slug,
       isAdmin: userCount === 0,
     });
+
+    const template = await getEmailTemplate('welcome', {
+      userName: displayName,
+    });
+
+    try {
+      await sendEmail({
+        from: `Kelly from Builder Book <${process.env.EMAIL_SUPPORT_FROM_ADDRESS}>`,
+        to: [email],
+        subject: template.subject,
+        body: template.message,
+      });
+    } catch (err) {
+      logger.error('Email sending error: ', err);
+    }
 
     return _.pick(newUser, UserClass.publicFields());
   }

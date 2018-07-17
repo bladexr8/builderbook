@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { OAuth2Strategy as Strategy } from 'passport-google-oauth';
+import logger from './logs';
 
 import User from './models/User';
 
@@ -27,7 +28,7 @@ export default function auth({ ROOT_URL, server }) {
       verified(null, user);
     } catch (err) {
       verified(err);
-      console.log(err); // eslint-disable-line
+      logger.error(err); // eslint-disable-line
     }
   };
   passport.use(new Strategy(
