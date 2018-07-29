@@ -8,6 +8,8 @@ import auth from './google';
 
 import logger from './logs';
 
+// import Chapter from './models/Chapter';
+
 require('dotenv').config();
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -47,6 +49,9 @@ app.prepare().then(() => {
   server.get('*', (req, res) => handle(req, res));
 
   server.listen(port, (err) => {
+    /* Chapter.create({ bookId: '59f3c240a1ab6e39c4b4d10d' }).catch((err) => {
+      logger.info(err);
+    }); */
     if (err) throw err;
     logger.info(`> Ready on ${ROOT_URL}`);
   });
