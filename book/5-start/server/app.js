@@ -4,9 +4,15 @@ import mongoSessionStore from 'connect-mongo';
 import next from 'next';
 import mongoose from 'mongoose';
 
+import api from './api';
+
 import auth from './google';
 
 import logger from './logs';
+
+const URL_MAP = {
+  '/login' : '/public/login',
+}
 
 // import Chapter from './models/Chapter';
 
@@ -46,7 +52,17 @@ app.prepare().then(() => {
 
   auth({ server, ROOT_URL });
 
-  server.get('*', (req, res) => handle(req, res));
+  // initialise API's
+  api(server);
+
+  server.get('*', (req, res) => {
+    const url = URL_MAP[req.path];
+    if (url) {
+      app.render(req, res, url);
+    } else {
+      handle(req, res);
+    }
+  });
 
   server.listen(port, (err) => {
     /* Chapter.create({ bookId: '59f3c240a1ab6e39c4b4d10d' }).catch((err) => {

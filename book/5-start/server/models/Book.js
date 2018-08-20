@@ -32,7 +32,8 @@ const mongoSchema = new Schema({
 
 class BookClass {
     // methods
-    static async list({ offset = 0, limit = 10 }) {
+    static async list({ offset = 0, limit = 10 } = {}) {
+        console.log(`[Books.js] Getting Books from MongoDB...`);
         // return by most recently created
         const books = await this.find({})
             .sort({ createdAt: -1 })
